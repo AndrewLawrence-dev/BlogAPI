@@ -12,5 +12,7 @@ namespace BlogAPI.Data.Repo.Interfaces
         public void Remove<T>(T entity) where T : class;
         public Task<bool> SaveAll();
         public Task<IEnumerable<BlogPost>> GetBlogPosts();
+        public Task<Author> GetAuthor(string Id);
+        public Task<Topic> GetTopic(string Id);
     }
 }

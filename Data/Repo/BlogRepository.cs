@@ -40,5 +40,15 @@ namespace BlogAPI.Data.Repo
                                          .OrderByDescending(p => p.Created)
                                          .ToListAsync();
         }
+
+        public async Task<Author> GetAuthor(string Id)
+        {
+            return await this._db_Context.Authors.FirstOrDefaultAsync(a => a.Id == Id);
+        }
+
+        public async Task<Topic> GetTopic(string Id)
+        {
+            return await this._db_Context.Topics.FirstOrDefaultAsync(t => t.Id == Id);
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace BlogAPI.Data.Models
         public string Id { get; set; }
         public Author Author { get; set; }
         public DateTime Created { get; set; }
-        public DateTime LastModified { get; set; }
+        public DateTime? LastModified { get; set; }
         public string Timezone { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
