@@ -30,19 +30,19 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(BlogToCreateDTO post)
+        public async Task<IActionResult> Create([FromBody] BlogToCreateDTO post)
         {
             DateTime current_date_and_time = DateTime.Now;
             BlogPost post_to_create        = new BlogPost()
             {
                 Id           = this._blog_manager.GetNewBlogID(),
-                Author       = await this._repo.GetAuthor(post.AuthorId),
+                Author       = await this._repo.GetAuthor("0B745330-A6E9-4C62-96AA-261AB95B28D1"),
                 Created      = current_date_and_time,
                 LastModified = null,
                 Timezone     = "EST",
                 Title        = post.Title,
-                Content      = post.Content,
-                Topics       = await this._blog_manager.GetTopicsFromIds(post.TopicIds)
+                Content      = post.Content//,
+                //Topics       = await this._blog_manager.GetTopicsFromIds(post.TopicIds)
             };
 
             try

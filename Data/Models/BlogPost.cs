@@ -14,7 +14,7 @@ namespace BlogAPI.Data.Models
         public string Timezone { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public IEnumerable<Topic> Topics { get; set; }
+        public IEnumerable<PostsTopics> PostsTopics { get; set; }
         public IEnumerable<Comment> Comments { get; set; }
     }
 }

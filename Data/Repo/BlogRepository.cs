@@ -36,7 +36,7 @@ namespace BlogAPI.Data.Repo
             return await this._db_Context.Posts
                                          .Include(p => p.Author)
                                          .Include(p => p.Comments)
-                                         .Include(p => p.Topics)
+                                         //.Include(p => p.Topics)
                                          .OrderByDescending(p => p.Created)
                                          .ToListAsync();
         }

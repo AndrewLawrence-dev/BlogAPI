@@ -92,20 +92,30 @@ namespace BlogAPI.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("BlogAPI.Data.Models.PostsTopics", b =>
+                {
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TopicId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PostId", "TopicId");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("PostsTopics");
+                });
+
             modelBuilder.Entity("BlogAPI.Data.Models.Topic", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BlogPostId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BlogPostId");
 
                     b.ToTable("Topics");
                 });
@@ -124,11 +134,19 @@ namespace BlogAPI.Migrations
                         .HasForeignKey("BlogPostId");
                 });
 
-            modelBuilder.Entity("BlogAPI.Data.Models.Topic", b =>
+            modelBuilder.Entity("BlogAPI.Data.Models.PostsTopics", b =>
                 {
-                    b.HasOne("BlogAPI.Data.Models.BlogPost", null)
-                        .WithMany("Topics")
-                        .HasForeignKey("BlogPostId");
+                    b.HasOne("BlogAPI.Data.Models.BlogPost", "Post")
+                        .WithMany("PostsTopics")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlogAPI.Data.Models.Topic", "Topic")
+                        .WithMany("PostsTopics")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -8,7 +8,7 @@ namespace BlogAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Author",
+                name: "Authors",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -18,34 +18,46 @@ namespace BlogAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Author", x => x.Id);
+                    table.PrimaryKey("PK_Authors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Post",
+                name: "Topics",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Topics", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Posts",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
                     AuthorId = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastModified = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
                     Timezone = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Post", x => x.Id);
+                    table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Post_Author_AuthorId",
+                        name: "FK_Posts_Authors_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "Author",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -56,63 +68,71 @@ namespace BlogAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Post_BlogPostId",
+                        name: "FK_Comments_Posts_BlogPostId",
                         column: x => x.BlogPostId,
-                        principalTable: "Post",
+                        principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Topic",
+                name: "PostsTopics",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    BlogPostId = table.Column<string>(nullable: true)
+                    PostId = table.Column<string>(nullable: false),
+                    TopicId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Topic", x => x.Id);
+                    table.PrimaryKey("PK_PostsTopics", x => new { x.PostId, x.TopicId });
                     table.ForeignKey(
-                        name: "FK_Topic_Post_BlogPostId",
-                        column: x => x.BlogPostId,
-                        principalTable: "Post",
+                        name: "FK_PostsTopics_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostsTopics_Topics_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topics",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_BlogPostId",
-                table: "Comment",
+                name: "IX_Comments_BlogPostId",
+                table: "Comments",
                 column: "BlogPostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Post_AuthorId",
-                table: "Post",
+                name: "IX_Posts_AuthorId",
+                table: "Posts",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Topic_BlogPostId",
-                table: "Topic",
-                column: "BlogPostId");
+                name: "IX_PostsTopics_TopicId",
+                table: "PostsTopics",
+                column: "TopicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Topic");
+                name: "PostsTopics");
 
             migrationBuilder.DropTable(
-                name: "Post");
+                name: "Posts");
 
             migrationBuilder.DropTable(
-                name: "Author");
+                name: "Topics");
+
+            migrationBuilder.DropTable(
+                name: "Authors");
         }
     }
 }

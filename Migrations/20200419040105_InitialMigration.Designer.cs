@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAPI.Migrations
 {
     [DbContext(typeof(AppDB))]
-    [Migration("20200327011839_InitialMigration")]
+    [Migration("20200419040105_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace BlogAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Author");
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("BlogAPI.Data.Models.BlogPost", b =>
@@ -54,7 +54,7 @@ namespace BlogAPI.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LastModified")
+                    b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Timezone")
@@ -67,7 +67,7 @@ namespace BlogAPI.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("BlogAPI.Data.Models.Comment", b =>
@@ -91,7 +91,22 @@ namespace BlogAPI.Migrations
 
                     b.HasIndex("BlogPostId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("BlogAPI.Data.Models.PostsTopics", b =>
+                {
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TopicId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PostId", "TopicId");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("PostsTopics");
                 });
 
             modelBuilder.Entity("BlogAPI.Data.Models.Topic", b =>
@@ -99,17 +114,12 @@ namespace BlogAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BlogPostId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BlogPostId");
-
-                    b.ToTable("Topic");
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("BlogAPI.Data.Models.BlogPost", b =>
@@ -126,11 +136,19 @@ namespace BlogAPI.Migrations
                         .HasForeignKey("BlogPostId");
                 });
 
-            modelBuilder.Entity("BlogAPI.Data.Models.Topic", b =>
+            modelBuilder.Entity("BlogAPI.Data.Models.PostsTopics", b =>
                 {
-                    b.HasOne("BlogAPI.Data.Models.BlogPost", null)
-                        .WithMany("Topics")
-                        .HasForeignKey("BlogPostId");
+                    b.HasOne("BlogAPI.Data.Models.BlogPost", "Post")
+                        .WithMany("PostsTopics")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlogAPI.Data.Models.Topic", "Topic")
+                        .WithMany("PostsTopics")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
