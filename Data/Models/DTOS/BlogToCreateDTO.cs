@@ -10,6 +10,6 @@ namespace BlogAPI.Data.Models.DTOS
         public string AuthorId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public IEnumerable<string> TopicIds { get; set; }
+        public IEnumerable<TopicsList_DTO> Topics { get; set; }
     }
 }

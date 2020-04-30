@@ -1,5 +1,6 @@
 ﻿using BlogAPI.Data.Context;
 using BlogAPI.Data.Models;
+using BlogAPI.Data.Models.DTOS;
 using BlogAPI.Data.Repo.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -44,6 +45,17 @@ namespace BlogAPI.Data.Repo
         public async Task<Author> GetAuthor(string Id)
         {
             return await this._db_Context.Authors.FirstOrDefaultAsync(a => a.Id == Id);
+        }
+
+        public async Task<ICollection<TopicsList_DTO>> GetTopics()
+        {
+            return await this._db_Context.Topics.Select(t => new TopicsList_DTO()
+                                                { 
+                                                    Id   = t.Id,
+                                                    Name = t.Name
+                                                })
+                                                .OrderBy(t => t.Name)
+                                                .ToListAsync();
         }
 
         public async Task<Topic> GetTopic(string Id)

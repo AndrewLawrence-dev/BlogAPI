@@ -41,8 +41,8 @@ namespace BlogAPI.Controllers
                 LastModified = null,
                 Timezone     = "EST",
                 Title        = post.Title,
-                Content      = post.Content//,
-                //Topics       = await this._blog_manager.GetTopicsFromIds(post.TopicIds)
+                Content      = post.Content,
+                PostsTopics  = this._blog_manager.GetTopicsFromCreateDTO(post.Topics)
             };
 
             try

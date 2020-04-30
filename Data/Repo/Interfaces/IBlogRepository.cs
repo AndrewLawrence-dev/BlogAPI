@@ -1,4 +1,5 @@
 ﻿using BlogAPI.Data.Models;
+using BlogAPI.Data.Models.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace BlogAPI.Data.Repo.Interfaces
         public Task<IEnumerable<BlogPost>> GetBlogPosts();
         public Task<Author> GetAuthor(string Id);
         public Task<Topic> GetTopic(string Id);
+        public Task<ICollection<TopicsList_DTO>> GetTopics();
     }
 }

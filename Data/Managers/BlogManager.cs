@@ -1,4 +1,5 @@
 ﻿using BlogAPI.Data.Models;
+using BlogAPI.Data.Models.DTOS;
 using BlogAPI.Data.Repo.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,16 +21,18 @@ namespace BlogAPI.Data.Managers
             return Guid.NewGuid().ToString();
         }
 
-        public async Task<IEnumerable<Topic>> GetTopicsFromIds(IEnumerable<string> topicIds)
+        public IEnumerable<PostsTopics> GetTopicsFromCreateDTO(IEnumerable<TopicsList_DTO> topics_from_dto)
         {
-            List<Topic> topics = new List<Topic>();
+            if (topics_from_dto == null) return null;
 
-            foreach (string topicId in topicIds)
-            {
-                topics.Add(await this._repo.GetTopic(topicId));
-            }
-
-            return topics;
+            return topics_from_dto.Select(t => new PostsTopics() {
+                TopicId = t.Id,
+                Topic   = new Topic()
+                {
+                    Id   = t.Id,
+                    Name = t.Name
+                }
+            });
         }
     }
 }

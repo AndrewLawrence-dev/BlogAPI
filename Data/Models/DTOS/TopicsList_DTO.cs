@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlogAPI.Data.Models
+namespace BlogAPI.Data.Models.DTOS
 {
-    public class Topic
+    public class TopicsList_DTO
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<PostsTopics> PostsTopics { get; set; }
     }
 }
