@@ -19,6 +19,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using BlogAPI.Data.Extensions;
+using Newtonsoft.Json;
 
 namespace BlogAPI
 {
@@ -37,7 +38,9 @@ namespace BlogAPI
             services.AddDbContext<AppDB>(X => X.UseSqlServer(this.Configuration.GetConnectionString("DefaultDB")));
             services.AddAutoMapper(typeof(BlogRepository).Assembly);
             services.AddScoped<IBlogRepository, BlogRepository>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(opt => {
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

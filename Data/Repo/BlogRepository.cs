@@ -32,12 +32,26 @@ namespace BlogAPI.Data.Repo
             return (await this._db_Context.SaveChangesAsync() > 0);
         }
 
-        public async Task<IEnumerable<BlogPost>> GetBlogPosts()
+        public async Task<IEnumerable<BlogToList_DTO>> GetBlogPosts()
         {
             return await this._db_Context.Posts
                                          .Include(p => p.Author)
                                          .Include(p => p.Comments)
-                                         //.Include(p => p.Topics)
+                                         .Include(p => p.PostsTopics)
+                                         .ThenInclude(pt => pt.Topic)
+                                         .Select(p => new BlogToList_DTO() {
+                                            Id           = p.Id,
+                                            Author       = p.Author,
+                                            Created      = p.Created,
+                                            LastModified = p.LastModified,
+                                            Timezone     = p.Timezone,
+                                            Title        = p.Title,
+                                            Content      = p.Content,
+                                            Topics       = p.PostsTopics.Select(pt => new TopicsList_DTO() {
+                                                                            Id   = pt.Topic.Id,
+                                                                            Name = pt.Topic.Name
+                                                                        })
+                                         })
                                          .OrderByDescending(p => p.Created)
                                          .ToListAsync();
         }

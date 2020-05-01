@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogAPI.Data.Managers;
+using BlogAPI.Data.Managers.Interfaces;
 using BlogAPI.Data.Models;
 using BlogAPI.Data.Models.DTOS;
 using BlogAPI.Data.Repo.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace BlogAPI.Controllers
 {
@@ -15,7 +17,7 @@ namespace BlogAPI.Controllers
     public class BlogPostsController : ControllerBase
     {
         private readonly IBlogRepository _repo;
-        private BlogManager _blog_manager;
+        private readonly IBlogManager _blog_manager;
 
         public BlogPostsController(IBlogRepository repo)
         {
@@ -32,17 +34,22 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BlogToCreateDTO post)
         {
-            DateTime current_date_and_time = DateTime.Now;
+            DateTime current_date_and_time = this._blog_manager.GetCurrentDateAndTime();
+            string new_blog_id             = this._blog_manager.GetNewBlogID();
+
             BlogPost post_to_create        = new BlogPost()
             {
-                Id           = this._blog_manager.GetNewBlogID(),
-                Author       = await this._repo.GetAuthor("0B745330-A6E9-4C62-96AA-261AB95B28D1"),
+                Id           = new_blog_id,
+                Author       = await this._blog_manager.GetDefaultPostAuthor(),
                 Created      = current_date_and_time,
                 LastModified = null,
-                Timezone     = "EST",
-                Title        = post.Title,
-                Content      = post.Content,
-                PostsTopics  = this._blog_manager.GetTopicsFromCreateDTO(post.Topics)
+                Timezone     = this._blog_manager.GetDefaultTimezone(),
+                Title        = post.Title?.Trim(),
+                Content      = post.Content?.Trim(),
+                PostsTopics  = post.Topics.Select(t => new PostsTopics {
+                                                PostId  = new_blog_id,
+                                                TopicId = t.Id
+                                          }).ToList()
             };
 
             try
@@ -51,7 +58,11 @@ namespace BlogAPI.Controllers
 
                 if (await this._repo.SaveAll())
                 {
-                    return Ok();
+                    return Ok(JsonSerializer.Serialize(new {
+                            RequestMet = true,
+                            Message    = "Post Created"
+                        }
+                    ));
                 }
             }
             catch (Exception ex)
